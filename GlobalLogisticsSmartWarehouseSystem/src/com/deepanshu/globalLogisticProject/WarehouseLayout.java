@@ -41,6 +41,7 @@ public class WarehouseLayout {
 		
 		List<Items> destiList = dl.findHeavyClusture("ludhiana", wc.grid);
 		double totalWeight = dl.findTotalWeight(destiList);
+		dl.getShippingManifest(wc.grid);
 	}
 	
 
