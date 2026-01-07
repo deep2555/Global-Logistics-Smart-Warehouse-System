@@ -15,7 +15,21 @@ public abstract class Items {
 		this.trackingId = trackingId;
 		this.weight = weight;
 		this.destination = destination;
+		
 	}
+
+	public String getTrackingId() {
+		return trackingId;
+	}
+
+	public double getWeight() {
+		return weight;
+	}
+
+	public String getDestination() {
+		return destination;
+	}
+	
 	
 	
 }

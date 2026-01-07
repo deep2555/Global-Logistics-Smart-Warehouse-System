@@ -3,6 +3,7 @@ package com.deepanshu.globalLogisticProject;
 import com.deepanshu.globalLogisticProject.customException.InvalidDestinationException;
 import com.deepanshu.globalLogisticProject.customException.SafetyViolationException;
 import com.deepanshu.globalLogisticProject.customException.StorageFullException;
+import com.deepanshu.globalLogisticProject.transactionLogs.TransactionalLogs;
 
 /*
 The warehouse is represented as a 10x10 Grid (a 2D Array of your base item type).
@@ -10,24 +11,44 @@ The warehouse is represented as a 10x10 Grid (a 2D Array of your base item type)
 public class WarehouseLayout {
 
 	private Items[][] grid = new Items[10][10];
+	private char[][] gridViewRetrieve = new char[10][10];
+	private TransactionalLogs tcLogs = new TransactionalLogs();
+
+	// test
+
+	public static void main(String[] args) {
+		WarehouseLayout wc = new WarehouseLayout();
+		Electronics ec = new Electronics("1", 123, "delhi", 3);
+		Perishables pc = new Perishables("2", 1234, "ludhiana", "2012");
+		DangerousGoods dc = new DangerousGoods("3", 12345, "chandigarh", 123);
+		
+		TransactionalLogs tc = new TransactionalLogs();
+		
+
+//		wc.putItems(ec, 1, 0, "delhi");
+//		wc.putItems(pc, 1, 1, "ludhiana");
+//		wc.putItems(dc, 3, 1, "chandigarh");
+
+//		wc.displayWarehouseMap();
+		try {
+			tc.loadLastSession(wc.gridViewRetrieve);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.print(tc.getLogs()+ " ");
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 10; j++) {
+				
+					System.out.print(wc.gridViewRetrieve[i][j]+ " ");	
+				
+			}
+			System.out.println();
 	
-	
-	
-	// test 
-	/*
-	 * public static void main(String[] args) { WarehouseLayout wc = new
-	 * WarehouseLayout(); Electronics ec = new Electronics("1", 123, "delhi", 3);
-	 * Perishables pc = new Perishables("2", 1234, "ludhiana", "2012");
-	 * DangerousGoods dc = new DangerousGoods("3", 12345, "chandigarh", 123);
-	 * 
-	 * 
-	 * wc.putItems(ec, 1, 0, "delhi"); wc.putItems(pc, 1, 1, "ludhiana");
-	 * wc.putItems(dc, 3,1, "chandigarh");
-	 * 
-	 * wc.displayWarehouseMap(); }
-	 */
-	
-	
+		}
+		
+	}
 
 	// method that can hold or put items in that grid
 
@@ -41,7 +62,7 @@ public class WarehouseLayout {
 			throw new InvalidDestinationException("Destination cannot be null empty or less than 3 character");
 		}
 
-		if ((row <0 || row > 10) || (column < 0 || column > 10)) {
+		if ((row < 0 || row > 10) || (column < 0 || column > 10)) {
 			throw new InvalidDestinationException("invalid input for rows and column");
 		}
 
@@ -55,6 +76,9 @@ public class WarehouseLayout {
 		}
 
 		grid[row][column] = item;
+		// here to add the logs
+		tcLogs.displayLogs("Item [" + item.getTrackingId() + "] placed at [" + row + "," + column + "]");
+		tcLogs.saveSession(grid);
 	}
 
 	// method to check the safety violation
