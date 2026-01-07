@@ -1,5 +1,9 @@
 package com.deepanshu.globalLogisticProject;
 
+
+import java.util.List;
+
+import com.deepanshu.globalLogisticProject.InterviewTask.DestinationClusture;
 import com.deepanshu.globalLogisticProject.customException.InvalidDestinationException;
 import com.deepanshu.globalLogisticProject.customException.SafetyViolationException;
 import com.deepanshu.globalLogisticProject.customException.StorageFullException;
@@ -14,41 +18,31 @@ public class WarehouseLayout {
 	private char[][] gridViewRetrieve = new char[10][10];
 	private TransactionalLogs tcLogs = new TransactionalLogs();
 
-	// test
+	// testing purpose
 
 	public static void main(String[] args) {
 		WarehouseLayout wc = new WarehouseLayout();
 		Electronics ec = new Electronics("1", 123, "delhi", 3);
 		Perishables pc = new Perishables("2", 1234, "ludhiana", "2012");
+		Perishables pc2 = new Perishables("6", 124, "ludhiana", "2014");
 		DangerousGoods dc = new DangerousGoods("3", 12345, "chandigarh", 123);
 		
 		TransactionalLogs tc = new TransactionalLogs();
+		DestinationClusture dl = new DestinationClusture();
+		
 		
 
-//		wc.putItems(ec, 1, 0, "delhi");
-//		wc.putItems(pc, 1, 1, "ludhiana");
-//		wc.putItems(dc, 3, 1, "chandigarh");
+		wc.putItems(ec, 1, 0, "delhi");
+		wc.putItems(pc, 1, 1, "ludhiana");
+		wc.putItems(pc2, 1, 3, "ludhiana");
+		wc.putItems(dc, 3, 1, "chandigarh");
 
-//		wc.displayWarehouseMap();
-		try {
-			tc.loadLastSession(wc.gridViewRetrieve);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		wc.displayWarehouseMap();
 		
-		System.out.print(tc.getLogs()+ " ");
-		for (int i = 0; i < 10; i++) {
-			for (int j = 0; j < 10; j++) {
-				
-					System.out.print(wc.gridViewRetrieve[i][j]+ " ");	
-				
-			}
-			System.out.println();
-	
-		}
-		
+		List<Items> destiList = dl.findHeavyClusture("ludhiana", wc.grid);
+		double totalWeight = dl.findTotalWeight(destiList);
 	}
+	
 
 	// method that can hold or put items in that grid
 
@@ -135,4 +129,18 @@ public class WarehouseLayout {
 			System.out.println();
 		}
 	}
+
+    // method to save or load the session in transaction
+	
+	public void saveSession() {
+		tcLogs.saveSession(grid);
+	}
+
+	public void loadSession() {
+		tcLogs.loadLastSession(gridViewRetrieve);
+	}
+
+
+
+
 }
